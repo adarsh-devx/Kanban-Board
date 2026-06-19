@@ -1,4 +1,4 @@
-// State and DOM elements
+// Saare DOM elements aur dynamic data store krne ke liye variables
 let tasksData = {};
 
 const todo = document.querySelector("#todo");
@@ -8,7 +8,7 @@ const done = document.querySelector("#done");
 const columns = [todo, progress, done];
 let dragElement = null;
 
-// Helper to update localStorage and counts for all columns
+// Har column ke cards count krne aur local storage update krne ke liye helper
 function updateLocalStorageAndCounts() {
   columns.forEach((col) => {
     const tasks = col.querySelectorAll(".task");
@@ -29,7 +29,7 @@ function updateLocalStorageAndCounts() {
   localStorage.setItem("task", JSON.stringify(tasksData));
 }
 
-// Function to add a task to a column (with full functionality)
+// Kisi bhi column me task add krne ka main function (isme drag-drop aur delete feature bhi shamil h)
 function addTask(tittle, desc, column) {
   const div = document.createElement("div");
   div.classList.add("task");
@@ -42,7 +42,7 @@ function addTask(tittle, desc, column) {
 
   column.appendChild(div);
 
-  // Drag events
+  // Jab task card ko drag (khichna) shuru kren
   div.addEventListener("dragstart", () => {
     dragElement = div;
   });
@@ -51,7 +51,7 @@ function addTask(tittle, desc, column) {
     dragElement = div;
   });
 
-  // Delete task event
+  // Delete button dabane pr card remove krne ka event
   const deleteBtn = div.querySelector("button");
   if (deleteBtn) {
     deleteBtn.addEventListener("click", () => {
@@ -63,7 +63,7 @@ function addTask(tittle, desc, column) {
   return div;
 }
 
-// Load tasks from localStorage on startup
+// Page load hote hi localStorage se saare purane tasks nikal kr render krna
 if (localStorage.getItem("task")) {
   const data = JSON.parse(localStorage.getItem("task"));
 
@@ -71,7 +71,7 @@ if (localStorage.getItem("task")) {
     const column = document.querySelector(`#${colId}`);
     if (column) {
       data[colId].forEach((task) => {
-        // Handle loading old keys safely (tittle/desc)
+        // Agar data purane format (title ya description) me ho to crash hone se bachaye
         const tittle = task.tittle || task.title || "";
         const desc = task.desc || task.description || "";
         addTask(tittle, desc, column);
@@ -80,7 +80,7 @@ if (localStorage.getItem("task")) {
   }
 }
 
-// Bind drag events and delete events to pre-existing static tasks in HTML (if any)
+// Pehle se bane hue tasks (static) ke liye drag/delete event setup krna
 document.querySelectorAll(".task").forEach((taskEl) => {
   taskEl.addEventListener("dragstart", () => {
     dragElement = taskEl;
@@ -97,10 +97,10 @@ document.querySelectorAll(".task").forEach((taskEl) => {
   }
 });
 
-// Sync counts on load
+// Initial load pr columns ke task counts sync krne ke liye
 updateLocalStorageAndCounts();
 
-// Add Drag & Drop events to columns
+// Columns ke upar drag enter, leave, over aur drop event configure krna
 function addDragEventsOnColumn(column) {
   column.addEventListener("dragenter", (e) => {
     e.preventDefault();
@@ -128,7 +128,7 @@ function addDragEventsOnColumn(column) {
 
 columns.forEach(addDragEventsOnColumn);
 
-// Modal logic
+// Naya task add krne waale modal window (popup) ki settings
 const toggleModalBtn = document.querySelector("#toggle-modal");
 const modal = document.querySelector(".modal");
 const modalBg = document.querySelector(".modal .bg");
